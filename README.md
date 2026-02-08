@@ -1,4 +1,5 @@
-# 🛡️ Secure Hybrid NIDS + IPS (Adaptive & Context-Aware)
+# 🛡️ Hybrid Network Traffic Analysis & Anomaly Detection Engine
+### High-Throughput Real-Time Data Processing with Context-Aware Filtering
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-red?style=for-the-badge&logo=streamlit&logoColor=white)
