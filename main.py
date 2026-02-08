@@ -325,7 +325,7 @@ def detect_handler(pkt):
 # 5. UI
 # ==============================
 st.set_page_config(page_title="Secure NIDS", layout="wide")
-st.title("🛡️ Secure NIDS + IPS (Production Edition)")
+st.title("🛡️ Hybrid Network Traffic Analysis Dashboard")
 
 with st.sidebar:
     st.header("⚙️ Configuration")
