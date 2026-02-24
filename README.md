@@ -64,7 +64,7 @@ Intrusion-Detection-System/
 ### 1. Clone the Repository
 
 ```bash
-git clone [https://github.com/Adithya-Prabakaran/Intrusion-Detection-System.git](https://github.com/Adithya-Prabakaran/Intrusion-Detection-System.git)
+git clone https://github.com/Adithya-Prabakaran/Intrusion-Detection-System.git
 cd Intrusion-Detection-System
 
 ```
@@ -73,7 +73,7 @@ cd Intrusion-Detection-System
 
 The training PCAP files are **NOT** included in the source code due to GitHub file size limits.
 
-1. Go to the **[Releases Page](https://www.google.com/search?q=../../releases)** of this repository.
+1. Go to the **[Releases Page](https://github.com/Adithya-Prabakaran/Intrusion-Detection-System/releases)** of this repository.
 2. Download the `.pcap` dataset files.
 3. Create a folder named `data` inside the project directory.
 4. **Move the downloaded `.pcap` files into the `data/` folder.**
@@ -152,7 +152,3 @@ Test the detection engine in real-time using the following commands in a **secon
 ---
 
 *Project developed by Adithya Prabakaran*
-
-```
-
-```
