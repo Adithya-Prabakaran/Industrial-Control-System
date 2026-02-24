@@ -127,7 +127,8 @@ Test the detection engine in real-time using the following commands in a **secon
 > ⚠️ **Note:** Start the app and switch to **Active Detect** mode *before* running these commands. Alerts will appear in the Triage Console within seconds.
 >
 > 🛑 **Danger Zone: Using `ping -f` (Flood Ping)**
-> The `sudo ping -f` command is an aggressive stress-testing tool that sends packets without waiting for a reply, effectively pushing traffic as fast as your hardware allows. **Use it with caution on your local network.** > * **Self-DoS Risk:** Because it consumes maximum CPU cycles and bandwidth, you can unintentionally DoS (Denial of Service) your own machine or network.
+> The `sudo ping -f` command is an aggressive stress-testing tool that sends packets without waiting for a reply, effectively pushing traffic as fast as your hardware allows. **Use it with caution on your local network.** 
+> * **Self-DoS Risk:** Because it consumes maximum CPU cycles and bandwidth, you can unintentionally DoS (Denial of Service) your own machine or network.
 > * **Network Instability:** Flooding your local network can instantly fill up your router's buffers, causing severe network latency, packet loss, and dropped internet connections for other devices sharing your Wi-Fi. 
 > * **Safe Alternative:** If your internet connection drops while testing, remove the `-f` flag or manually slow down the interval (e.g., `ping -i 0.2 -c 200 1.0.0.1`).
 
