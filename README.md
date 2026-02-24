@@ -58,10 +58,6 @@ Intrusion-Detection-System/
 ├── trusted_ips.json            ← Persistent memory for learned Safe IPs
 └── .gitignore                  ← Ignores heavy PCAP files
 
-Based on the final version of the code (`ids_app_final.py` which you renamed to `main.py`) and the specific "Adaptive" and "Context-Aware" features we implemented, here is the **Fully Updated README.md**.
-
-This version highlights the **"False Positive" solution** (the streaming filter) and the **"Adaptive Learning"** (the feedback buttons), which are the strongest selling points of your project.
-
 ## ⚠️ Installation & Setup
 
 ### 1. Clone the Repository
@@ -116,6 +112,23 @@ sudo streamlit run main.py
 4. **Demo Mode:** Simulates attacks (e.g., "Simulate Exfil") to demonstrate the alert system without needing actual attack tools.
 
 ---
+## 🧪 Live Attack Simulation
+
+Test the detection engine in real-time using the following commands in a **second terminal** while the app is running in **Active Detect** mode.
+
+| Command | Expected Alert |
+| :--- | :--- |
+| `curl "http://1.0.0.1/search?q=UNION+SELECT+password"` | 🔴 SQL Injection (HIGH) |
+| `curl -A "sqlmap" http://1.0.0.1` | 🟡 Scanner Tool (MEDIUM) |
+| `python test_exfil.py` | 🔴 Data Exfiltration (HIGH) |
+| `sudo ping -f -c 200 1.0.0.1` | 🟡 ICMP Flood (MEDIUM) |
+
+> ⚠️ **Note:** Start the app and switch to **Active Detect** mode *before* running these commands. Alerts will appear in the Triage Console within seconds.
+>
+> 🛑 **Danger Zone: Using `ping -f` (Flood Ping)**
+> The `sudo ping -f` command is an aggressive stress-testing tool that sends packets without waiting for a reply, effectively pushing traffic as fast as your hardware allows. **Use it with caution on your local network.** > * **Self-DoS Risk:** Because it consumes maximum CPU cycles and bandwidth, you can unintentionally DoS (Denial of Service) your own machine or network.
+> * **Network Instability:** Flooding your local network can instantly fill up your router's buffers, causing severe network latency, packet loss, and dropped internet connections for other devices sharing your Wi-Fi. 
+> * **Safe Alternative:** If your internet connection drops while testing, remove the `-f` flag or manually slow down the interval (e.g., `ping -i 0.2 -c 200 1.0.0.1`).
 
 ## 📊 Performance & Logic
 
