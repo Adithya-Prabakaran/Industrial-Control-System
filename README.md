@@ -51,12 +51,13 @@ It features a **"Human-in-the-Loop" Adaptive Learning System**, allowing analyst
 
 ```text
 Intrusion-Detection-System/
-├── data/                       
-│   └── (Empty by default - Download PCAPs from Releases)
+├── data/                       ← (Empty by default - Download PCAPs from Releases)
 ├── main.py                     ← Main Application (Streamlit)
 ├── requirements.txt            ← Dependencies
+├── test_exfil.py               ← Custom Data Exfiltration simulation script
 ├── trusted_ips.json            ← Persistent memory for learned Safe IPs
 └── .gitignore                  ← Ignores heavy PCAP files
+```
 
 ## ⚠️ Installation & Setup
 
@@ -100,7 +101,7 @@ streamlit run main.py
 **Mac / Linux:** (Requires root for packet sniffing)
 
 ```bash
-sudo streamlit run main.py
+sudo ./venv/bin/streamlit run main.py
 
 ```
 
