@@ -1,37 +1,50 @@
-# 🛡️ Hybrid Network Traffic Analysis & Anomaly Detection Engine
-### High-Throughput Real-Time Data Processing with Context-Aware Filtering
+# 🛡️ Real-Time Threat Detection Engine for ICS and SCADA Environments
+### Hybrid Deep Packet Inspection + Statistical Anomaly Detection for Industrial Control Networks
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-red?style=for-the-badge&logo=streamlit&logoColor=white)
 ![Scapy](https://img.shields.io/badge/Network-Scapy-green?style=for-the-badge)
-![Security](https://img.shields.io/badge/Security-Adaptive_IDS-orange?style=for-the-badge)
+![Security](https://img.shields.io/badge/Security-ICS%2FSCADA-orange?style=for-the-badge)
 
 ## 📌 Overview
-**A production-grade Network Intrusion Detection & Prevention System (NIDS/IPS)** designed to solve the biggest challenge in modern cybersecurity: **False Positives.**
 
-Unlike traditional academic IDS projects that flag *any* high-bandwidth traffic (like YouTube or Netflix) as an attack, this system uses a **Context-Aware Hybrid Engine**. It combines **Signature Matching** for known threats (SQLi, XSS, RCE) with **Statistical Anomaly Detection** that intelligently distinguishes between legitimate streaming traffic and actual data exfiltration.
+**A purpose-built threat detection engine for Industrial Control System (ICS) and SCADA networks** — targeting attack vectors that are completely invisible to conventional IDS tools.
 
-It features a **"Human-in-the-Loop" Adaptive Learning System**, allowing analysts to flag False Positives in real-time, permanently teaching the model to ignore safe traffic.
+Unlike general-purpose IDS solutions that focus on web-layer threats (SQL injection, XSS), this system performs **Deep Packet Inspection at the industrial protocol level** — detecting unauthorized Modbus write commands, DNP3 Direct Operate sequences, and Siemens S7comm CPU Stop commands in real time. These are the exact attack techniques used in Stuxnet, the 2015 Ukrainian power grid attack, and the Triton/TRISIS ICS malware campaign.
+
+It combines **ICS Protocol DPI** for known attack signatures with a **Statistical Anomaly Engine** trained on baseline ICS traffic — and features a **Human-in-the-Loop Adaptive Learning System** that reduces false positives over time through analyst feedback.
+
+---
 
 ## 🚀 Key Features
 
-### 1. 🧠 Adaptive Intelligence (Human-in-the-Loop)
-* **Real-Time Triage:** The dashboard allows analysts to mark alerts as **✅ True Positive** or **❌ False Positive**.
-* **Persistent Learning:** Marking an IP as "False Positive" adds it to a persistent **Trusted Allowlist** (`trusted_ips.json`), preventing future spam alerts from that source.
+### 1. ⚙️ ICS/SCADA Protocol Deep Packet Inspection
+Detects attacks targeting industrial protocols at the byte level:
 
-### 2. 🎥 Context-Aware Anomaly Engine
-* **Streaming vs. Exfiltration:** Uses a **Smart Protocol Filter** to validate high-bandwidth traffic.
-    * *Scenario A:* 15 MB/s on Port 443 (HTTPS) → **Ignored** (Likely YouTube/Netflix).
-    * *Scenario B:* 15 MB/s on Port 12345 (UDP) → **ALERT** (Data Exfiltration).
-* **Windowed Rate Analysis:** Calculates traffic velocity (Bytes/Sec) over sliding windows rather than cumulative totals, preventing long-duration connections from drifting into "anomaly" territory.
+| Protocol | Attack Detected | Severity |
+| :--- | :--- | :--- |
+| **Modbus TCP** | Write Register (FC=6) — unauthorized PLC register modification | 🔴 HIGH |
+| **Modbus TCP** | Illegal Function Code (FC=90) — protocol abuse / fuzzing | 🔴 CRITICAL |
+| **DNP3** | Direct Operate — unauthorized actuator control command | 🔴 HIGH |
+| **Siemens S7comm** | CPU Stop Command — remote PLC shutdown | 🔴 CRITICAL |
+| **SMBv1** | EternalBlue signature — lateral movement in OT network | 🔴 CRITICAL |
 
-### 3. ⚡ Hybrid Detection Logic
-* **Signature Engine:** Regex-based detection for:
-    * SQL Injection (`UNION SELECT`)
-    * Remote Code Execution (RCE) via `cmd.exe`, `powershell`, `/bin/sh`
-    * XSS Payloads (`<script>`, `alert()`)
-    * Nmap/Sqlmap Scans
-* **Anomaly Engine:** Robust Scaler (Median/IQR) statistical model trained on baseline traffic to detect zero-day volume attacks.
+### 2. 🌐 Web & IT Layer Signatures
+Covers the full attack surface of hybrid OT/IT networks:
+* **SQL Injection** (`UNION SELECT` pattern matching)
+* **Remote Code Execution** (`powershell`, `cmd.exe`, `/bin/bash`)
+* **XSS Payloads** (`<script>` tags, `alert()`)
+* **Scanner Tools** (`sqlmap`, `nmap`, `nikto`, `hydra`)
+
+### 3. 🧠 Adaptive Intelligence (Human-in-the-Loop)
+* **Real-Time Triage:** Analysts mark alerts as **✅ True Positive** or **❌ False Positive** directly in the dashboard.
+* **Persistent Learning:** False Positive IPs are added to a persistent **Trusted Allowlist** (`trusted_ips.json`), permanently suppressing future noise from that source across sessions.
+
+### 4. 🎥 Context-Aware Anomaly Engine
+Trained on your network's own baseline traffic — distinguishes legitimate ICS polling from actual attacks:
+* *Scenario A:* High-bandwidth traffic on Port 443 (HTTPS) → **Ignored** (streaming/normal).
+* *Scenario B:* High-bandwidth traffic on Port 12345 (UDP) → **ALERT** (data exfiltration).
+* **Sliding Window Rate Analysis:** Computes traffic velocity over 5-second windows, preventing long-lived flows from drifting above thresholds.
 
 ---
 
@@ -40,50 +53,53 @@ It features a **"Human-in-the-Loop" Adaptive Learning System**, allowing analyst
 | Component | Technology |
 | :--- | :--- |
 | **Core Logic** | Python 3.10+ |
-| **Packet Sniffing** | Scapy (`AsyncSniffer`) |
-| **Math & Stats** | NumPy (Log-scaled Feature Extraction) |
-| **Dashboard** | Streamlit (Real-time Visualization) |
-| **Blocking** | `iptables` (Linux) / Simulated (Windows/Mac) |
+| **Packet Capture & Injection** | Scapy (`AsyncSniffer`, `sendp`, `Ether/IP/TCP/UDP`) |
+| **DPI Engine** | Python `re` module — compiled byte-level regex |
+| **Anomaly Detection** | NumPy — log1p scaling, IQR normalization, kNN distance scoring |
+| **Dashboard** | Streamlit — real-time Live Triage Console |
+| **Blocking** | `iptables` (Linux, auto-mode) / Alert-only (macOS/Windows) |
+| **State Persistence** | JSON (`trusted_ips.json`) |
 
 ---
 
 ## 📂 Repository Structure
 
 ```text
-Intrusion-Detection-System/
-├── data/                       ← (Empty by default - Download PCAPs from Releases)
+Industrial-Control-System/
+├── data/                       ← Captured baseline PCAPs for training (gitignored)
 ├── main.py                     ← Main Application (Streamlit)
-├── requirements.txt            ← Dependencies
-├── test_exfil.py               ← Custom Data Exfiltration simulation script
+├── test_ics_attack.py          ← ICS/SCADA attack simulation script (Scapy sendp)
+├── requirements.txt            ← Python dependencies
 ├── trusted_ips.json            ← Persistent memory for learned Safe IPs
 └── .gitignore                  ← Ignores heavy PCAP files
 ```
+
+---
 
 ## ⚠️ Installation & Setup
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Adithya-Prabakaran/Intrusion-Detection-System.git
-cd Intrusion-Detection-System
-
+git clone https://github.com/Adithya-Prabakaran/Industrial-Control-System.git
+cd Industrial-Control-System
 ```
 
-### 2. Download Training Data (CRITICAL STEP)
-
-The training PCAP files are **NOT** included in the source code due to GitHub file size limits.
-
-1. Go to the **[Releases Page](https://github.com/Adithya-Prabakaran/Intrusion-Detection-System/releases)** of this repository.
-2. Download the `.pcap` dataset files.
-3. Create a folder named `data` inside the project directory.
-4. **Move the downloaded `.pcap` files into the `data/` folder.**
-
-### 3. Install Dependencies
+### 2. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
-
 ```
+
+### 3. (Optional) Train the Anomaly Engine
+
+The Signature Detection engine works immediately with no training required. To also enable the Anomaly Detection engine:
+
+1. Switch to **Monitor Mode** → click **START RECORDING**
+2. Browse normally for 3–5 minutes (multiple websites, streaming)
+3. Click **STOP & SAVE** to capture a baseline PCAP
+4. Switch to **Train Mode** → select your PCAP → click **Train Model**
+5. Enable **Anomaly Detection (ML)** in the sidebar
 
 ---
 
@@ -91,64 +107,88 @@ pip install -r requirements.txt
 
 ### Start the Dashboard
 
-**Windows:**
-
-```bash
-streamlit run main.py
-
-```
-
 **Mac / Linux:** (Requires root for packet sniffing)
 
 ```bash
 sudo ./venv/bin/streamlit run main.py
+```
 
+**Windows:**
+
+```bash
+streamlit run main.py
 ```
 
 ### Modes of Operation
 
-1. **Monitor Mode:** Captures live traffic to build a custom baseline `.pcap` file.
-2. **Train Mode:** Reads the PCAP files from `data/` and trains the Statistical Anomaly Model (calculates Median/IQR thresholds).
-3. **Active Detect:** The core IDS mode. Sniffs live traffic, applies Signature + Anomaly logic, and displays alerts in the **Triage Console**.
-4. **Demo Mode:** Simulates attacks (e.g., "Simulate Exfil") to demonstrate the alert system without needing actual attack tools.
+1. **Monitor Mode:** Captures live traffic to build a baseline `.pcap` file for anomaly training.
+2. **Train Mode:** Reads the PCAP and trains the Statistical Anomaly Model (Median/IQR thresholds + kNN scoring).
+3. **Active Detect:** Core detection mode. Sniffs live traffic, applies Signature + Anomaly engines, displays alerts in the **Live Triage Console**.
+4. **Demo Mode:** Simulates attacks via button clicks — no terminal commands needed. Useful for safe demonstrations.
 
 ---
+
 ## 🧪 Live Attack Simulation
 
-Test the detection engine in real-time using the following commands in a **second terminal** while the app is running in **Active Detect** mode.
+Test the detection engine in real time using a **second terminal** while the app is running in **Active Detect** mode with **Signature Detection ON**.
 
-| Command | Expected Alert |
-| :--- | :--- |
-| `curl "http://1.0.0.1/search?q=UNION+SELECT+password"` | 🔴 SQL Injection (HIGH) |
-| `curl -A "sqlmap" http://1.0.0.1` | 🟡 Scanner Tool (MEDIUM) |
-| `python test_exfil.py` | 🔴 Data Exfiltration (HIGH) |
-| `sudo ping -f -c 200 1.0.0.1` | 🟡 ICMP Flood (MEDIUM) |
+### Web / IT Attacks
+```bash
+# SQL Injection → 🔴 SQL Injection (HIGH)
+curl "http://1.0.0.1/search?q=UNION+SELECT+password"
 
-> ⚠️ **Note:** Start the app and switch to **Active Detect** mode *before* running these commands. Alerts will appear in the Triage Console within seconds.
+# Scanner Tool → 🟡 Scanner Tool (MEDIUM)
+curl -A "sqlmap" http://1.0.0.1
+```
+
+### ICS / SCADA Protocol Attacks
+Run the attack simulator script (requires root for raw packet injection):
+
+```bash
+# All ICS attacks in sequence
+sudo ./venv/bin/python3 test_ics_attack.py --test all
+
+# Individual attacks
+sudo ./venv/bin/python3 test_ics_attack.py --test modbus_write   # → Modbus Write Register (HIGH)
+sudo ./venv/bin/python3 test_ics_attack.py --test illegal_fc     # → Modbus Illegal FC (CRITICAL)
+sudo ./venv/bin/python3 test_ics_attack.py --test dnp3           # → DNP3 Direct Operate (HIGH)
+sudo ./venv/bin/python3 test_ics_attack.py --test s7             # → S7comm CPU Stop (CRITICAL)
+sudo ./venv/bin/python3 test_ics_attack.py --test rce            # → RCE Attempt (CRITICAL)
+sudo ./venv/bin/python3 test_ics_attack.py --test smb            # → SMBv1 Exploit (CRITICAL)
+```
+
+> ⚠️ **Note:** Start the app and switch to **Active Detect** mode *before* running these commands. Alerts appear in the Triage Console within seconds.
 >
-> 🛑 **Danger Zone: Using `ping -f` (Flood Ping)**
-> The `sudo ping -f` command is an aggressive stress-testing tool that sends packets without waiting for a reply, effectively pushing traffic as fast as your hardware allows. **Use it with caution on your local network.** 
-> * **Self-DoS Risk:** Because it consumes maximum CPU cycles and bandwidth, you can unintentionally DoS (Denial of Service) your own machine or network.
-> * **Network Instability:** Flooding your local network can instantly fill up your router's buffers, causing severe network latency, packet loss, and dropped internet connections for other devices sharing your Wi-Fi. 
-> * **Safe Alternative:** If your internet connection drops while testing, remove the `-f` flag or manually slow down the interval (e.g., `ping -i 0.2 -c 200 1.0.0.1`).
+> 🍎 **macOS:** The attack script auto-detects your IP via `ipconfig getifaddr en0`. To override: `--target YOUR_IP`
 
-## 📊 Performance & Logic
+---
 
-| Attack Type | Detection Method | Status |
-| --- | --- | --- |
-| **SQL Injection** | Signature (Regex) | ✅ Detected |
-| **RCE (PowerShell)** | Signature (Regex) | ✅ Detected |
-| **Data Exfiltration** | Anomaly (Volume/Rate) | ✅ Detected |
-| **YouTube Streaming** | **Context Filter** | 🔇 **Ignored (Correctly)** |
-| **Port Scanning** | Heuristic (Syn Count) | ✅ Detected |
+## 📊 Detection Coverage
+
+| Attack | Detection Method | Engine | Status |
+| :--- | :--- | :--- | :--- |
+| **SQL Injection** | Regex payload match | SIG | ✅ Detected |
+| **RCE (PowerShell/bash)** | Regex payload match | SIG | ✅ Detected |
+| **SMBv1 Exploit (EternalBlue)** | Magic byte sequence | SIG | ✅ Detected |
+| **Scanner Tools (sqlmap/nmap)** | User-agent / payload match | SIG | ✅ Detected |
+| **Modbus Write Register (FC=6)** | Binary protocol DPI | SIG | ✅ Detected |
+| **Modbus Illegal Function Code** | Binary protocol DPI | SIG | ✅ Detected |
+| **DNP3 Direct Operate** | Binary protocol DPI | SIG | ✅ Detected |
+| **S7comm CPU Stop** | Binary protocol DPI | SIG | ✅ Detected |
+| **ICMP Flood** | Packet rate threshold | SIG | ✅ Detected |
+| **Data Exfiltration (volume)** | Byte rate anomaly | ANOM | ✅ Detected |
+| **Port Scan** | SYN count heuristic | SIG | ✅ Detected |
+| **YouTube / HTTPS Streaming** | Context-aware filter | Filter | 🔇 Correctly Ignored |
 
 ---
 
 ## 🔮 Future Roadmap
 
-* [ ] **Deep Learning:** Replace Statistical model with Autoencoders for complex pattern recognition.
-* [ ] **SIEM Integration:** Forward logs to Splunk or ELK Stack.
-* [ ] **Email Alerts:** Automated SMTP notifications for CRITICAL threats.
+* [ ] **Deep Learning:** Replace kNN statistical model with Autoencoders for complex ICS pattern recognition.
+* [ ] **Extended ICS Protocols:** Add EtherNet/IP (CIP), IEC 61850 GOOSE, and OPC-UA signatures.
+* [ ] **SIEM Integration:** Forward structured alerts to Splunk or ELK Stack via syslog.
+* [ ] **Dataset Benchmarking:** Evaluate against SWaT (Secure Water Treatment) labeled dataset for quantitative precision/recall metrics.
+* [ ] **Email Alerts:** Automated SMTP notifications for CRITICAL severity threats.
 
 ---
 
