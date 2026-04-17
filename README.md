@@ -1,4 +1,5 @@
-# 🛡️ Secure Hybrid NIDS + IPS (Adaptive & Context-Aware)
+# 🛡️ Hybrid Network Traffic Analysis & Anomaly Detection Engine
+### High-Throughput Real-Time Data Processing with Context-Aware Filtering
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-red?style=for-the-badge&logo=streamlit&logoColor=white)
@@ -50,23 +51,20 @@ It features a **"Human-in-the-Loop" Adaptive Learning System**, allowing analyst
 
 ```text
 Intrusion-Detection-System/
-├── data/                       
-│   └── (Empty by default - Download PCAPs from Releases)
+├── data/                       ← (Empty by default - Download PCAPs from Releases)
 ├── main.py                     ← Main Application (Streamlit)
 ├── requirements.txt            ← Dependencies
+├── test_exfil.py               ← Custom Data Exfiltration simulation script
 ├── trusted_ips.json            ← Persistent memory for learned Safe IPs
 └── .gitignore                  ← Ignores heavy PCAP files
-
-Based on the final version of the code (`ids_app_final.py` which you renamed to `main.py`) and the specific "Adaptive" and "Context-Aware" features we implemented, here is the **Fully Updated README.md**.
-
-This version highlights the **"False Positive" solution** (the streaming filter) and the **"Adaptive Learning"** (the feedback buttons), which are the strongest selling points of your project.
+```
 
 ## ⚠️ Installation & Setup
 
 ### 1. Clone the Repository
 
 ```bash
-git clone [https://github.com/Adithya-Prabakaran/Intrusion-Detection-System.git](https://github.com/Adithya-Prabakaran/Intrusion-Detection-System.git)
+git clone https://github.com/Adithya-Prabakaran/Intrusion-Detection-System.git
 cd Intrusion-Detection-System
 
 ```
@@ -75,7 +73,7 @@ cd Intrusion-Detection-System
 
 The training PCAP files are **NOT** included in the source code due to GitHub file size limits.
 
-1. Go to the **[Releases Page](https://www.google.com/search?q=../../releases)** of this repository.
+1. Go to the **[Releases Page](https://github.com/Adithya-Prabakaran/Intrusion-Detection-System/releases)** of this repository.
 2. Download the `.pcap` dataset files.
 3. Create a folder named `data` inside the project directory.
 4. **Move the downloaded `.pcap` files into the `data/` folder.**
@@ -103,7 +101,7 @@ streamlit run main.py
 **Mac / Linux:** (Requires root for packet sniffing)
 
 ```bash
-sudo streamlit run main.py
+sudo ./venv/bin/streamlit run main.py
 
 ```
 
@@ -115,6 +113,24 @@ sudo streamlit run main.py
 4. **Demo Mode:** Simulates attacks (e.g., "Simulate Exfil") to demonstrate the alert system without needing actual attack tools.
 
 ---
+## 🧪 Live Attack Simulation
+
+Test the detection engine in real-time using the following commands in a **second terminal** while the app is running in **Active Detect** mode.
+
+| Command | Expected Alert |
+| :--- | :--- |
+| `curl "http://1.0.0.1/search?q=UNION+SELECT+password"` | 🔴 SQL Injection (HIGH) |
+| `curl -A "sqlmap" http://1.0.0.1` | 🟡 Scanner Tool (MEDIUM) |
+| `python test_exfil.py` | 🔴 Data Exfiltration (HIGH) |
+| `sudo ping -f -c 200 1.0.0.1` | 🟡 ICMP Flood (MEDIUM) |
+
+> ⚠️ **Note:** Start the app and switch to **Active Detect** mode *before* running these commands. Alerts will appear in the Triage Console within seconds.
+>
+> 🛑 **Danger Zone: Using `ping -f` (Flood Ping)**
+> The `sudo ping -f` command is an aggressive stress-testing tool that sends packets without waiting for a reply, effectively pushing traffic as fast as your hardware allows. **Use it with caution on your local network.** 
+> * **Self-DoS Risk:** Because it consumes maximum CPU cycles and bandwidth, you can unintentionally DoS (Denial of Service) your own machine or network.
+> * **Network Instability:** Flooding your local network can instantly fill up your router's buffers, causing severe network latency, packet loss, and dropped internet connections for other devices sharing your Wi-Fi. 
+> * **Safe Alternative:** If your internet connection drops while testing, remove the `-f` flag or manually slow down the interval (e.g., `ping -i 0.2 -c 200 1.0.0.1`).
 
 ## 📊 Performance & Logic
 
@@ -137,7 +153,3 @@ sudo streamlit run main.py
 ---
 
 *Project developed by Adithya Prabakaran*
-
-```
-
-```
