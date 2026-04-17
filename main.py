@@ -666,6 +666,7 @@ elif mode == "Active Detect":
         st.metric("False Positives", S.fp)
 
 elif mode == "Demo":
+
     st.header("🧪 Demo / Simulation Mode")
     st.info("Use these buttons to simulate attacks without running actual attack tools.")
 
